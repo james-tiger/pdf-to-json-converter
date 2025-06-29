@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to JSON Converter</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PDF to JSON Converter</h1>
+            <p>Upload your PDF file and get the JSON output instantly</p>
+        </header>
+
+        <div class="upload-container">
+            <div class="drop-zone" id="dropZone">
+                <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+                <div class="drop-zone-content">
+                    <img src="https://cdn-icons-png.flaticon.com/512/337/337946.png" alt="PDF Icon" class="pdf-icon">
+                    <p>Drag & drop your PDF file here or click to browse</p>
+                    <p class="file-info" id="fileInfo">No file selected</p>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button id="convertBtn" class="btn" disabled>Convert to JSON</button>
+                <button id="copyBtn" class="btn secondary" disabled>Copy JSON</button>
+                <button id="downloadBtn" class="btn secondary" disabled>Download JSON</button>
+            </div>
+        </div>
+
+        <div class="result-container">
+            <div class="result-header">
+                <h2>JSON Output</h2>
+                <div class="result-actions">
+                    <button id="toggleViewBtn" class="btn small">Toggle View</button>
+                </div>
+            </div>
+            <div class="result-content">
+                <pre id="jsonOutput">Upload a PDF file to see the JSON output here...</pre>
+                <textarea id="jsonTextarea" class="hidden" spellcheck="false"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Processing your PDF...</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
