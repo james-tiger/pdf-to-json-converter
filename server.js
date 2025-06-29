@@ -10,7 +10,7 @@ const port = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
-app.use(express.static('public'));
+app.use(express.static('docs'));
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -31,7 +31,7 @@ if (!fs.existsSync('uploads')) {
 
 // Routes
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'docs', 'index.html'));
 });
 
 // Handle file upload and conversion
