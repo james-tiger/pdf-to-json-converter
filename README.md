@@ -68,5 +68,3 @@ This project is open source and available under the [MIT License](LICENSE).
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
-# pdf-to-json-converter
-# pdf-to-json-converter
