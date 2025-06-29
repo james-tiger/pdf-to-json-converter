@@ -47,16 +47,19 @@ app.post('/convert', upload.single('pdfFile'), async (req, res) => {
         const dataBuffer = fs.readFileSync(filePath);
         
         // Parse PDF
-        const data = await pdf(dataBuffer);
+        const data = await pdf(dataBuffer).catch(parseError => {
+            console.error('PDF Parsing Error:', parseError);
+            throw parseError;
+        });
         
         // Basic text extraction (can be enhanced based on specific PDF structure)
         const result = {
             text: data.text,
             metadata: {
-                info: data.info,
-                metadata: data.metadata,
-                numPages: data.numpages,
-                version: data.version
+                info: data.info || {},
+                metadata: data.metadata || {},
+                numPages: data.numpages || 0,
+                version: data.version || 'Unknown'
             }
         };
         
@@ -65,8 +68,16 @@ app.post('/convert', upload.single('pdfFile'), async (req, res) => {
         
         res.json(result);
     } catch (error) {
-        console.error('Error processing PDF:', error);
-        res.status(500).json({ error: 'Error processing PDF' });
+        console.error('Detailed Error processing PDF:', {
+            message: error.message,
+            stack: error.stack,
+            name: error.name
+        });
+        
+        res.status(500).json({ 
+            error: 'Error processing PDF', 
+            details: error.message 
+        });
     }
 });
 

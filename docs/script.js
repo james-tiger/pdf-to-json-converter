@@ -111,15 +111,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: formData
             });
             
+            const responseData = await response.json();
+            
             if (!response.ok) {
-                throw new Error(`Error: ${response.status}`);
+                throw new Error(responseData.details || `Error: ${response.status}`);
             }
             
-            const data = await response.json();
-            jsonData = data;
+            jsonData = responseData;
             
             // Display the JSON
-            displayJson(data);
+            displayJson(responseData);
             
             // Enable buttons
             copyBtn.disabled = false;
@@ -128,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
         } catch (error) {
             console.error('Conversion error:', error);
-            alert('Error converting PDF. Please try again.');
+            alert(`Error converting PDF: ${error.message}`);
         } finally {
             // Hide loading overlay
             loadingOverlay.style.display = 'none';
