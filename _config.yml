@@ -1,0 +1,25 @@
+# GitHub Pages configuration
+title: PDF to JSON Converter
+description: A client-side PDF to JSON converter that works entirely in your browser
+url: ""
+baseurl: ""
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# Exclude files from processing
+exclude:
+  - node_modules/
+  - package.json
+  - package-lock.json
+  - server.js
+  - uploads/
+  - middleware/
+  - utils/
+  - config/
+  - README.md
+
+# Include files
+include:
+  - docs/

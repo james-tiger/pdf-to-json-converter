@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Configure PDF.js worker
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     // DOM Elements
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
@@ -94,33 +96,72 @@ document.addEventListener('DOMContentLoaded', () => {
         resetResults();
     }
     
-    // Convert PDF to JSON
+    // Convert PDF to JSON using client-side PDF.js
     async function convertToJson() {
         if (!currentFile) return;
-        
-        const formData = new FormData();
-        formData.append('pdfFile', currentFile);
         
         try {
             // Show loading overlay
             loadingOverlay.style.display = 'flex';
             
-            // Send file to server for processing
-            const response = await fetch('/convert', {
-                method: 'POST',
-                body: formData
-            });
+            // Read file as ArrayBuffer
+            const arrayBuffer = await currentFile.arrayBuffer();
             
-            const responseData = await response.json();
+            // Load PDF using PDF.js
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
             
-            if (!response.ok) {
-                throw new Error(responseData.details || `Error: ${response.status}`);
+            const result = {
+                filename: currentFile.name,
+                size: currentFile.size,
+                pages: pdf.numPages,
+                metadata: {},
+                text: '',
+                pageTexts: []
+            };
+            
+            // Get metadata
+            try {
+                const metadata = await pdf.getMetadata();
+                result.metadata = {
+                    title: metadata.info?.Title || '',
+                    author: metadata.info?.Author || '',
+                    subject: metadata.info?.Subject || '',
+                    creator: metadata.info?.Creator || '',
+                    producer: metadata.info?.Producer || '',
+                    creationDate: metadata.info?.CreationDate || '',
+                    modificationDate: metadata.info?.ModDate || ''
+                };
+            } catch (metaError) {
+                console.warn('Could not extract metadata:', metaError);
             }
             
-            jsonData = responseData;
+            // Extract text from all pages
+            let fullText = '';
+            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                try {
+                    const page = await pdf.getPage(pageNum);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(' ');
+                    result.pageTexts.push({
+                        page: pageNum,
+                        text: pageText
+                    });
+                    fullText += pageText + '\n';
+                } catch (pageError) {
+                    console.warn(`Error extracting text from page ${pageNum}:`, pageError);
+                    result.pageTexts.push({
+                        page: pageNum,
+                        text: '',
+                        error: pageError.message
+                    });
+                }
+            }
+            
+            result.text = fullText.trim();
+            jsonData = result;
             
             // Display the JSON
-            displayJson(responseData);
+            displayJson(result);
             
             // Enable buttons
             copyBtn.disabled = false;
