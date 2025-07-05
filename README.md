@@ -95,7 +95,7 @@ The converter extracts comprehensive information from your PDF:
 1. Fork this repository
 2. Go to Settings > Pages in your GitHub repository
 3. Select "Deploy from a branch" and choose "main"
-4. Your site will be available at `https://yourusername.github.io/pdf-to-json-converter`
+4. Your site will be available at `https://james-tiger.github.io/pdf-to-json-converter`
 
 ## Privacy & Security
 
@@ -104,9 +104,6 @@ The converter extracts comprehensive information from your PDF:
 - **Open source**: Full transparency of the code
 - **No tracking**: No analytics or tracking scripts
 
-## License
-
-This project is open source and available under the [MIT License](LICENSE).
 
 ## Contributing
 
